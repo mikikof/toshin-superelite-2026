@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>取引履歴 100 件 ― 不正利用は、どれか</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #FFFFFF;
+    --paper-2:      #FAF9F6;
+    --paper-3:      #F4F2EC;
+    --ink:          #1A1D24;
+    --ink-2:        #2F343E;
+    --ink-3:        #5A6070;
+    --ink-4:        #9DA2AE;
+    --ink-5:        #C6CAD2;
+    --line:         #E5E1D6;
+    --line-2:       #EFEDE5;
+
+    --blue:         #5E7BC6;
+    --blue-soft:    #E1E7F4;
+    --blue-deep:    #4566B3;
+
+    --purple:       #9B8FC8;
+    --purple-soft:  #ECE5F4;
+    --purple-deep:  #7261A5;
+
+    --green:        #88B69C;
+    --green-soft:   #E2EEE7;
+
+    --rose:         #C18197;
+    --rose-soft:    #F2E2E6;
+    --rose-deep:    #9E5B71;
+
+    --amber:        #C4A572;
+    --amber-soft:   #F2E6CC;
+
+    --dark:         #1A2032;
+
+    --card-shadow: 0 1px 2px rgba(26,29,36,0.04), 0 8px 28px rgba(26,29,36,0.06);
+    --hover-shadow: 0 1px 2px rgba(26,29,36,0.05), 0 12px 36px rgba(26,29,36,0.09);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #EAE7DE; min-height: 100vh; }
+  body {
+    font-family: "Zen Kaku Gothic New", "Inter", system-ui, sans-serif;
+    color: var(--ink);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding: 56px 24px 120px;
+  }
+
+  /* ============ Header ============ */
+  .app {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--paper);
+    border-radius: 24px;
+    box-shadow: 0 40px 100px rgba(26,29,36,0.18);
+    overflow: hidden;
+  }
+
+  header {
+    padding: 56px 64px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: ""; position: absolute; top: -100px; right: -100px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: var(--purple-soft); opacity: 0.5;
+    z-index: 0;
+  }
+  header > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: var(--purple); letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--purple);
+  }
+
+  h1 {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 40px; line-height: 1.4; font-weight: 700;
+    color: var(--ink); letter-spacing: 0.005em; margin-bottom: 16px;
+    max-width: 760px;
+  }
+  h1 .accent { color: var(--purple); }
+  .subtitle {
+    font-size: 17px; line-height: 1.7; font-weight: 500;
+    color: var(--ink-3); letter-spacing: 0.02em; max-width: 760px;
+  }
+
+  /* ============ Statement-style list ============ */
+  .statement {
+    padding: 0 64px 24px;
+  }
+  .statement-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 22px 0 16px;
+    border-bottom: 1.5px solid var(--ink);
+    margin-bottom: 0;
+  }
+  .statement-head .left {
+    font: 700 12px/1 "Roboto", sans-serif;
+    color: var(--ink-2); letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  .statement-head .left .sub {
+    margin-top: 8px;
+    font: 500 12px/1 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.06em;
+    text-transform: none;
+  }
+  .statement-head .right {
+    text-align: right;
+    font: 500 11px/1.6 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.06em;
+  }
+  .statement-head .right strong {
+    color: var(--ink); font-weight: 700;
+  }
+
+  /* ============ Rows ============ */
+  .rows {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 36px 100px 1fr 220px 110px;
+    align-items: center;
+    gap: 16px;
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--line-2);
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+    user-select: none;
+  }
+  .row:hover {
+    background: var(--paper-3);
+  }
+  .row.selected {
+    background: var(--purple-soft);
+  }
+  .row .idx {
+    font: 600 10px/1 "Roboto", sans-serif;
+    color: var(--ink-5); letter-spacing: 0.08em;
+    text-align: right;
+  }
+  .row .dt {
+    font: 500 12px/1.4 "JetBrains Mono", monospace;
+    color: var(--ink-3); letter-spacing: 0.02em;
+  }
+  .row .dt .time {
+    color: var(--ink-4); font-size: 11px;
+  }
+  .row .merchant {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .row .merchant .icon {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: var(--paper-3);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-3);
+    font: 700 11px/1 "Roboto", sans-serif;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .row .merchant .name {
+    font: 500 13.5px/1.4 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink); letter-spacing: 0.02em;
+  }
+  .row .merchant .cat {
+    display: block;
+    margin-top: 2px;
+    font: 500 10px/1 "Zen Maru Gothic", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.06em;
+  }
+  .row .loc {
+    font: 500 12px/1.4 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.02em;
+  }
+  .row .amount {
+    text-align: right;
+    font: 700 14px/1 "Roboto", sans-serif;
+    color: var(--ink); letter-spacing: -0.005em;
+  }
+  .row .amount .yen { color: var(--ink-4); font-weight: 500; margin-right: 3px; }
+  .row.selected .merchant .icon {
+    background: var(--purple); color: white;
+  }
+
+  /* ============ Result reveal state ============ */
+  .row.revealed-fraud {
+    background: var(--rose-soft);
+    border-bottom-color: var(--rose);
+    animation: revealPulse 0.6s ease-out;
+  }
+  .row.revealed-fraud .merchant .icon {
+    background: var(--rose); color: white;
+  }
+  .row.revealed-fraud .merchant .name {
+    color: var(--rose-deep); font-weight: 700;
+  }
+  .row.revealed-fraud .amount { color: var(--rose-deep); }
+  .row.dimmed { opacity: 0.45; }
+
+  @keyframes revealPulse {
+    0% { background: white; transform: scale(1); }
+    40% { background: #F8C8D3; transform: scale(1.01); }
+    100% { background: var(--rose-soft); transform: scale(1); }
+  }
+
+  /* ============ Action bar ============ */
+  .actions {
+    position: sticky;
+    bottom: 24px;
+    margin: 24px 64px 0;
+    z-index: 10;
+  }
+  .actions-inner {
+    background: var(--dark);
+    color: white;
+    border-radius: 999px;
+    padding: 16px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 20px 60px rgba(26,32,50,0.35);
+    gap: 24px;
+  }
+  .actions .status {
+    font: 600 13.5px/1.4 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.04em;
+    flex: 1;
+  }
+  .actions .status .label { color: #B7C2DA; font-weight: 500; }
+  .actions .status .picked { color: #ECD8A6; font-weight: 700; margin-left: 12px; font-family: "Roboto", monospace; }
+  .actions button {
+    background: var(--paper);
+    color: var(--dark);
+    border: none;
+    padding: 11px 26px;
+    border-radius: 999px;
+    font: 700 13px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+    flex-shrink: 0;
+  }
+  .actions button:hover:not(:disabled) {
+    background: #ECD8A6;
+    transform: translateY(-1px);
+  }
+  .actions button:disabled {
+    opacity: 0.35; cursor: not-allowed;
+  }
+  .actions button.secondary {
+    background: transparent; color: white;
+    border: 1.5px solid rgba(255,255,255,0.35);
+  }
+  .actions button.secondary:hover {
+    background: rgba(255,255,255,0.08);
+    transform: none;
+  }
+
+  /* ============ Reveal panel ============ */
+  .reveal-panel {
+    margin: 28px 64px 0;
+    padding: 32px 36px;
+    background: linear-gradient(135deg, var(--rose-soft) 0%, #FFFFFF 100%);
+    border: 1.5px solid var(--rose);
+    border-radius: 18px;
+    display: none;
+  }
+  .reveal-panel.show { display: block; }
+  .reveal-panel .verdict {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 22px;
+  }
+  .reveal-panel .verdict .icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--rose); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font: 800 22px/1 "Roboto", sans-serif;
+    flex-shrink: 0;
+  }
+  .reveal-panel .verdict.correct .icon { background: var(--green); }
+  .reveal-panel .verdict h2 {
+    font: 700 22px/1.4 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink); letter-spacing: 0.01em;
+  }
+  .reveal-panel .verdict h2 .accent { color: var(--rose-deep); }
+  .reveal-panel .verdict.correct h2 .accent { color: var(--green); }
+
+  .reveal-panel h3 {
+    font: 700 13px/1 "Roboto", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.18em; text-transform: uppercase;
+    margin: 24px 0 14px;
+  }
+  .reveal-panel .clues {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .reveal-panel .clue {
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .reveal-panel .clue .label {
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: var(--rose-deep); letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .reveal-panel .clue .val {
+    font: 700 17px/1.4 "Zen Kaku Gothic New", "Roboto", sans-serif;
+    color: var(--ink);
+  }
+  .reveal-panel .clue .note {
+    font: 500 12px/1.5 "Zen Maru Gothic", sans-serif;
+    color: var(--ink-3); margin-top: 2px;
+  }
+
+  .reveal-panel .footnote {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--line);
+    font: 500 13px/1.7 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.02em;
+  }
+  .reveal-panel .footnote strong { color: var(--ink); font-weight: 700; }
+
+  /* ============ footer ============ */
+  footer {
+    padding: 24px 64px 32px;
+    margin-top: 24px;
+    font: 500 11px/1.6 "Zen Maru Gothic", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.04em;
+  }
+  footer .credit { text-align: center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="eyebrow"><span class="dot"></span>FRAUD DETECTION · DEMO</div>
+    <h1>あるカード利用者の、<br><span class="accent">取引履歴 100 件</span>。</h1>
+    <div class="subtitle">この中の 1 件は、本人の利用ではありません。<br>どれだか、わかるでしょうか。</div>
+  </header>
+
+  <div class="statement">
+    <div class="statement-head">
+      <div class="left">
+        CARD STATEMENT
+        <div class="sub">取引期間: 2026/04/16 — 2026/05/15</div>
+      </div>
+      <div class="right">
+        合計 <strong>100</strong> 件<br>
+        合計金額 <strong id="totalAmount">¥ —</strong>
+      </div>
+    </div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <div class="reveal-panel" id="revealPanel">
+    <div class="verdict" id="verdict">
+      <div class="icon" id="verdictIcon">!</div>
+      <h2 id="verdictText"></h2>
+    </div>
+    <h3>不正と判定された 4 つのシグナル</h3>
+    <div class="clues" id="clues"></div>
+    <div class="footnote">
+      人間の目では、<strong>100 件の中から、これらの違和感を一発で拾うのは難しい</strong>。
+      実際の不正検知では、<strong>時刻・場所・金額・加盟店カテゴリ・利用者の過去の習慣</strong>
+      ― 数十の特徴量を機械学習モデルに与え、それぞれの取引が不正である確率を計算しています。<br>
+      <span style="color:var(--ink-4)">(このデモでは、わかりやすいように不正取引を 1 件だけ人為的に混ぜています。実際にはどの取引が不正かは分かっていない状態から、モデルが確率を推定します。)</span>
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="actions-inner">
+      <div class="status" id="status">
+        <span class="label">不正と思う 1 件を、リストから選んでください。</span>
+      </div>
+      <button id="resetBtn" class="secondary" hidden>もう一度</button>
+      <button id="revealBtn" disabled>答え合わせ</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="credit">
+      合成データ ― 架空の利用者・架空の加盟店名・架空の金額を使用<br>
+      東進ハイスクール スーパーエリートコース「1% 未満から生まれる知」/ 第 0 幕 デモ用
+    </div>
+  </footer>
+</div>
+
+<script>
+// =============================================================================
+// 取引データ生成(seed 固定で再現可能)
+// =============================================================================
+
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = a;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+const MERCHANTS = [
+  { name: "セブン-イレブン",     cat: "コンビニ",   icon: "C",  min: 220,   max: 2400,  loc: ["東京都 渋谷区","東京都 新宿区","東京都 中野区"] },
+  { name: "ファミリーマート",    cat: "コンビニ",   icon: "C",  min: 180,   max: 2100,  loc: ["東京都 渋谷区","東京都 杉並区","東京都 練馬区"] },
+  { name: "ローソン",            cat: "コンビニ",   icon: "C",  min: 230,   max: 1900,  loc: ["東京都 渋谷区","東京都 港区"] },
+  { name: "スターバックス 渋谷",  cat: "カフェ",     icon: "S",  min: 420,   max: 980,   loc: ["東京都 渋谷区"] },
+  { name: "ドトール 新宿南口",    cat: "カフェ",     icon: "D",  min: 350,   max: 720,   loc: ["東京都 新宿区"] },
+  { name: "サイゼリヤ",          cat: "飲食",       icon: "R",  min: 880,   max: 2400,  loc: ["東京都 渋谷区","東京都 新宿区"] },
+  { name: "マクドナルド",        cat: "飲食",       icon: "M",  min: 480,   max: 1600,  loc: ["東京都 渋谷区","東京都 中野区"] },
+  { name: "吉野家",              cat: "飲食",       icon: "Y",  min: 580,   max: 1200,  loc: ["東京都 新宿区"] },
+  { name: "ガスト",              cat: "飲食",       icon: "G",  min: 1200,  max: 3400,  loc: ["東京都 練馬区","東京都 杉並区"] },
+  { name: "ライフ 笹塚店",        cat: "スーパー",   icon: "L",  min: 1800,  max: 6400,  loc: ["東京都 渋谷区"] },
+  { name: "オーケー 中野店",      cat: "スーパー",   icon: "O",  min: 1500,  max: 5900,  loc: ["東京都 中野区"] },
+  { name: "Amazon.co.jp",        cat: "オンライン", icon: "A",  min: 980,   max: 8500,  loc: ["オンライン"] },
+  { name: "楽天市場",            cat: "オンライン", icon: "R",  min: 1200,  max: 6800,  loc: ["オンライン"] },
+  { name: "メルカリ",            cat: "オンライン", icon: "M",  min: 850,   max: 4200,  loc: ["オンライン"] },
+  { name: "JR東日本 Suica チャージ", cat: "交通",   icon: "J",  min: 1000,  max: 5000,  loc: ["東京都 渋谷区","東京都 新宿区"] },
+  { name: "京王電鉄",            cat: "交通",       icon: "K",  min: 280,   max: 690,   loc: ["東京都 渋谷区"] },
+  { name: "ENEOS セルフ初台",    cat: "ガソリン",   icon: "E",  min: 4200,  max: 7800,  loc: ["東京都 渋谷区"] },
+  { name: "ユニクロ 新宿",        cat: "アパレル",   icon: "U",  min: 1990,  max: 8900,  loc: ["東京都 新宿区"] },
+  { name: "無印良品",            cat: "雑貨",       icon: "M",  min: 1280,  max: 6400,  loc: ["東京都 渋谷区"] },
+  { name: "ABC マート",          cat: "アパレル",   icon: "A",  min: 3800,  max: 12800, loc: ["東京都 渋谷区"] },
+  { name: "TOHO シネマズ 渋谷",  cat: "娯楽",       icon: "T",  min: 1800,  max: 3600,  loc: ["東京都 渋谷区"] },
+  { name: "紀伊國屋 新宿本店",    cat: "書籍",       icon: "K",  min: 980,   max: 4800,  loc: ["東京都 新宿区"] },
+  { name: "NTTドコモ",           cat: "通信",       icon: "N",  min: 7800,  max: 9800,  loc: ["オンライン"] },
+  { name: "東京電力",            cat: "公共",       icon: "T",  min: 6400,  max: 13200, loc: ["オンライン"] },
+  { name: "東京ガス",            cat: "公共",       icon: "T",  min: 4200,  max: 8800,  loc: ["オンライン"] },
+];
+
+function randInt(rng, min, max) {
+  return Math.floor(rng() * (max - min + 1)) + min;
+}
+
+function pad(n, w) { return String(n).padStart(w, "0"); }
+
+function generateTransactions(seed = 20260516) {
+  const rng = mulberry32(seed);
+  const txns = [];
+
+  // Range: 2026-04-16 〜 2026-05-15(30 日)
+  const baseDate = new Date(2026, 3, 16); // 4月16日
+
+  for (let i = 0; i < 99; i++) {
+    const m = MERCHANTS[Math.floor(rng() * MERCHANTS.length)];
+    const dayOffset = Math.floor(rng() * 30);
+    const date = new Date(baseDate);
+    date.setDate(baseDate.getDate() + dayOffset);
+
+    // typical日中の hours (7-22)
+    const hour = randInt(rng, 7, 22);
+    const minute = randInt(rng, 0, 59);
+
+    const amount = randInt(rng, m.min, m.max);
+    const loc = m.loc[Math.floor(rng() * m.loc.length)];
+
+    txns.push({
+      fraud: false,
+      date,
+      hour, minute,
+      merchant: m.name,
+      category: m.cat,
+      icon: m.icon,
+      location: loc,
+      amount,
+    });
+  }
+
+  // Fraud transaction
+  const fraudDate = new Date(2026, 4, 11); // 5月11日(日)
+  const fraud = {
+    fraud: true,
+    date: fraudDate,
+    hour: 3, minute: 47,
+    merchant: "GENERIC ONLINE STORE",
+    category: "オンライン",
+    icon: "X",
+    location: "Amsterdam, NL",
+    amount: 98400,
+  };
+
+  // sort by date asc, then random position for fraud among same day
+  txns.sort((a, b) => {
+    const da = +a.date, db = +b.date;
+    if (da !== db) return da - db;
+    return (a.hour * 60 + a.minute) - (b.hour * 60 + b.minute);
+  });
+
+  // Insert fraud at chronological position
+  const fraudTs = +fraud.date + fraud.hour * 60 + fraud.minute;
+  let insertIdx = txns.findIndex(t =>
+    (+t.date + t.hour * 60 + t.minute) > fraudTs
+  );
+  if (insertIdx === -1) insertIdx = txns.length;
+  txns.splice(insertIdx, 0, fraud);
+
+  return txns;
+}
+
+// =============================================================================
+// Render
+// =============================================================================
+
+const WEEK_DAYS = ["日", "月", "火", "水", "木", "金", "土"];
+
+function formatDate(d) {
+  return `${pad(d.getMonth() + 1, 2)}/${pad(d.getDate(), 2)} (${WEEK_DAYS[d.getDay()]})`;
+}
+
+function formatAmount(n) {
+  return n.toLocaleString("ja-JP");
+}
+
+const state = {
+  txns: [],
+  selectedIdx: null,
+  revealed: false,
+  fraudIdx: -1,
+};
+
+function render() {
+  const rowsEl = document.getElementById("rows");
+  rowsEl.innerHTML = "";
+
+  state.txns.forEach((t, i) => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.dataset.idx = i;
+
+    row.innerHTML = `
+      <div class="idx">${pad(i + 1, 3)}</div>
+      <div class="dt">
+        ${formatDate(t.date)}<br>
+        <span class="time">${pad(t.hour, 2)}:${pad(t.minute, 2)}</span>
+      </div>
+      <div class="merchant">
+        <div class="icon">${t.icon}</div>
+        <div>
+          <div class="name">${t.merchant}</div>
+          <span class="cat">${t.category}</span>
+        </div>
+      </div>
+      <div class="loc">${t.location}</div>
+      <div class="amount">
+        <span class="yen">¥</span>${formatAmount(t.amount)}
+      </div>
+    `;
+
+    row.addEventListener("click", () => onRowClick(i));
+    rowsEl.appendChild(row);
+  });
+
+  // Total
+  const total = state.txns.reduce((s, t) => s + t.amount, 0);
+  document.getElementById("totalAmount").textContent = `¥ ${formatAmount(total)}`;
+
+  updateStatus();
+}
+
+function onRowClick(i) {
+  if (state.revealed) return;
+  state.selectedIdx = i;
+  document.querySelectorAll(".row").forEach((r, idx) => {
+    r.classList.toggle("selected", idx === i);
+  });
+  updateStatus();
+}
+
+function updateStatus() {
+  const statusEl = document.getElementById("status");
+  const btnEl = document.getElementById("revealBtn");
+
+  if (state.revealed) {
+    statusEl.innerHTML = `<span class="label">答え合わせ完了 ―</span><span class="picked">FRAUD = #${pad(state.fraudIdx + 1, 3)}</span>`;
+    btnEl.disabled = true;
+    return;
+  }
+
+  if (state.selectedIdx === null) {
+    statusEl.innerHTML = `<span class="label">不正と思う 1 件を、リストから選んでください。</span>`;
+    btnEl.disabled = true;
+  } else {
+    const t = state.txns[state.selectedIdx];
+    statusEl.innerHTML = `<span class="label">選択中:</span><span class="picked">#${pad(state.selectedIdx + 1, 3)} · ${t.merchant} · ¥${formatAmount(t.amount)}</span>`;
+    btnEl.disabled = false;
+  }
+}
+
+function reveal() {
+  if (state.revealed) return;
+  state.revealed = true;
+
+  // highlight fraud row, dim others
+  const rows = document.querySelectorAll(".row");
+  rows.forEach((r, idx) => {
+    r.classList.remove("selected");
+    if (idx === state.fraudIdx) {
+      r.classList.add("revealed-fraud");
+    } else if (state.selectedIdx !== null && idx !== state.selectedIdx) {
+      r.classList.add("dimmed");
+    }
+  });
+
+  // Scroll fraud row into view
+  rows[state.fraudIdx].scrollIntoView({ behavior: "smooth", block: "center" });
+
+  // Result panel
+  const correct = state.selectedIdx === state.fraudIdx;
+  const verdict = document.getElementById("verdict");
+  const verdictIcon = document.getElementById("verdictIcon");
+  const verdictText = document.getElementById("verdictText");
+  const cluesEl = document.getElementById("clues");
+
+  if (correct) {
+    verdict.classList.add("correct");
+    verdictIcon.textContent = "✓";
+    verdictText.innerHTML = `正解 ― <span class="accent">#${pad(state.fraudIdx + 1, 3)}</span> が、本人の利用ではありませんでした。`;
+  } else {
+    verdict.classList.remove("correct");
+    verdictIcon.textContent = "✗";
+    if (state.selectedIdx === null) {
+      verdictText.innerHTML = `本人の利用ではないのは ― <span class="accent">#${pad(state.fraudIdx + 1, 3)}</span> でした。`;
+    } else {
+      verdictText.innerHTML = `本人の利用ではないのは <span class="accent">#${pad(state.fraudIdx + 1, 3)}</span> ― 選択された #${pad(state.selectedIdx + 1, 3)} は、ふつうの取引でした。`;
+    }
+  }
+
+  const f = state.txns[state.fraudIdx];
+  // 正常取引(不正以外)から平均・最高額を実データで算出(reset 再生成にも追従)
+  const normalAmounts = state.txns.filter(t => !t.fraud).map(t => t.amount);
+  const avgNormal = Math.round(normalAmounts.reduce((s, a) => s + a, 0) / normalAmounts.length);
+  const maxNormal = Math.max(...normalAmounts);
+  cluesEl.innerHTML = `
+    <div class="clue">
+      <span class="label">SIGNAL 1 ― 時刻</span>
+      <span class="val">${pad(f.hour, 2)}:${pad(f.minute, 2)}</span>
+      <span class="note">他の 99 件は すべて 7:00 〜 22:59 の取引</span>
+    </div>
+    <div class="clue">
+      <span class="label">SIGNAL 2 ― 場所</span>
+      <span class="val">Amsterdam, NL</span>
+      <span class="note">この利用者は、過去 1 年、国外利用ゼロ</span>
+    </div>
+    <div class="clue">
+      <span class="label">SIGNAL 3 ― 金額</span>
+      <span class="val">¥ ${formatAmount(f.amount)}</span>
+      <span class="note">同利用者の平均 ¥ ${formatAmount(avgNormal)} / これまでの最高額 ¥ ${formatAmount(maxNormal)} も大きく超過</span>
+    </div>
+    <div class="clue">
+      <span class="label">SIGNAL 4 ― 加盟店</span>
+      <span class="val">GENERIC ONLINE STORE</span>
+      <span class="note">過去に利用履歴なし / 一般化された加盟店名(身元特定困難)</span>
+    </div>
+  `;
+
+  document.getElementById("revealPanel").classList.add("show");
+  document.getElementById("resetBtn").hidden = false;
+
+  updateStatus();
+}
+
+function reset() {
+  state.selectedIdx = null;
+  state.revealed = false;
+  document.getElementById("revealPanel").classList.remove("show");
+  document.getElementById("resetBtn").hidden = true;
+  document.getElementById("revealBtn").disabled = true;
+
+  // re-generate transactions with a fresh seed
+  const seed = Math.floor(Math.random() * 1e8);
+  init(seed);
+}
+
+function init(seed) {
+  state.txns = generateTransactions(seed);
+  state.fraudIdx = state.txns.findIndex(t => t.fraud);
+  state.selectedIdx = null;
+  state.revealed = false;
+  render();
+}
+
+document.getElementById("revealBtn").addEventListener("click", reveal);
+document.getElementById("resetBtn").addEventListener("click", reset);
+
+// 初期表示は固定 seed(再現性のため)
+init(20260516);
+</script>
+</body>
+</html>

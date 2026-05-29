@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>100 人の顔 ― さあ、何人が本物?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #FFFFFF;
+    --paper-2:      #FAF9F6;
+    --paper-3:      #F4F2EC;
+    --paper-dark:   #0A0B0F;
+    --ink:          #1A1D24;
+    --ink-2:        #2F343E;
+    --ink-3:        #5A6070;
+    --ink-4:        #9DA2AE;
+    --line:         #E5E1D6;
+
+    --rose:         #C18197;
+    --rose-soft:    #F2E2E6;
+    --rose-deep:    #9E5B71;
+
+    --blue:         #5E7BC6;
+    --blue-soft:    #E1E7F4;
+    --green:        #88B69C;
+    --amber:        #C4A572;
+    --amber-soft:   #F2E6CC;
+    --ecru:         #ECD8A6;
+    --dark:         #1A2032;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #EAE7DE; min-height: 100vh; }
+  body {
+    font-family: "Zen Kaku Gothic New", "Inter", system-ui, sans-serif;
+    color: var(--ink); font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 24px 80px;
+  }
+
+  /* ============ Frame ============ */
+  .app {
+    max-width: 1100px; margin: 0 auto;
+    background: var(--paper);
+    border-radius: 24px;
+    box-shadow: 0 40px 100px rgba(26,29,36,0.18);
+    overflow: hidden;
+    transition: background 0.6s;
+  }
+  .app.flashing { background: var(--paper-dark); }
+
+  header {
+    padding: 56px 64px 36px;
+    position: relative; overflow: hidden;
+    transition: opacity 0.4s, padding 0.4s, max-height 0.4s;
+  }
+  .app.flashing header,
+  .app.ended header { display: none; }
+
+  header::before {
+    content: ""; position: absolute; top: -100px; right: -100px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: var(--rose-soft); opacity: 0.5; z-index: 0;
+  }
+  header::after {
+    content: ""; position: absolute; bottom: -120px; left: -120px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, var(--amber-soft) 0%, transparent 70%);
+    z-index: 0;
+  }
+  header > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: var(--rose-deep); letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--rose-deep); }
+  .eyebrow .step { color: var(--ink-4); font-weight: 500; margin-left: 12px; }
+
+  h1 {
+    font-size: 40px; line-height: 1.4; font-weight: 700;
+    letter-spacing: 0.005em; margin-bottom: 18px;
+    max-width: 820px;
+  }
+  h1 .accent { color: var(--rose-deep); }
+  .subtitle {
+    font-size: 17px; line-height: 1.75; font-weight: 500;
+    color: var(--ink-3); letter-spacing: 0.02em; max-width: 760px;
+  }
+
+  /* ============ Intro phase ============ */
+  .intro-actions {
+    margin: 32px 64px;
+    display: flex; justify-content: center; gap: 16px;
+  }
+  .app.flashing .intro-actions,
+  .app.ended .intro-actions { display: none; }
+
+  .btn-start {
+    background: var(--rose);
+    color: white;
+    padding: 18px 48px;
+    border: none;
+    border-radius: 999px;
+    font: 700 16px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(193,129,151,0.45);
+    transition: transform 0.18s, background 0.18s;
+  }
+  .btn-start:hover {
+    background: var(--rose-deep);
+    transform: translateY(-2px);
+  }
+  .btn-start .icon { margin-right: 12px; }
+
+  /* ============ Flash phase ============ */
+  .flash {
+    display: none;
+    padding: 64px;
+    min-height: 80vh;
+    flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 36px;
+    position: relative;
+  }
+  .app.flashing .flash,
+  .app.paused .flash { display: flex; }
+  .app.paused .flash .trio { filter: blur(8px) brightness(0.55); transition: filter 0.4s; }
+
+  /* Inter-cycle pause overlay (リトライ) */
+  .pause-overlay {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    gap: 24px;
+    background: rgba(10,11,15,0.75);
+    backdrop-filter: blur(4px);
+    z-index: 10;
+    border-radius: 24px;
+  }
+  .app.paused .pause-overlay { display: flex; }
+  .pause-overlay .lab {
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: rgba(255,255,255,0.55); letter-spacing: 0.24em; text-transform: uppercase;
+  }
+  .pause-overlay .ttl {
+    font: 700 28px/1.35 "Zen Kaku Gothic New", sans-serif;
+    color: white;
+    text-align: center;
+  }
+  .pause-overlay .ttl .accent { color: var(--ecru); }
+  .pause-overlay .btns {
+    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    margin-top: 6px;
+  }
+  .pause-overlay button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 999px;
+    font: 700 14px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: transform 0.16s, background 0.16s;
+  }
+  .pause-overlay .btn-retry {
+    background: var(--paper);
+    color: var(--dark);
+  }
+  .pause-overlay .btn-retry:hover {
+    background: var(--ecru);
+    transform: translateY(-2px);
+  }
+  .pause-overlay .btn-next {
+    background: var(--rose);
+    color: white;
+    box-shadow: 0 12px 28px rgba(193,129,151,0.45);
+  }
+  .pause-overlay .btn-next:hover {
+    background: var(--rose-deep);
+    transform: translateY(-2px);
+  }
+
+  .flash .meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    width: 100%;
+    color: rgba(255,255,255,0.5);
+    font: 700 12px/1 "Roboto", sans-serif;
+    letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  .flash .meta .counter {
+    font: 800 22px/1 "Roboto", monospace;
+    color: var(--ecru); letter-spacing: 0.05em;
+  }
+  .flash .meta .counter .total { color: rgba(255,255,255,0.4); margin-left: 8px; }
+
+  .trio {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 14px;
+    width: 100%;
+  }
+  .trio .face {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #14171F;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    position: relative;
+  }
+  .trio .face.empty { background: transparent; box-shadow: none; }
+  .trio .face img {
+    width: 100%; height: 100%; display: block;
+    object-fit: cover;
+  }
+  .trio .face .seq {
+    position: absolute; left: 8px; top: 6px;
+    font: 800 11px/1 "Roboto", monospace;
+    color: var(--ecru); letter-spacing: 0.06em;
+    text-shadow: 0 0 10px rgba(0,0,0,0.9);
+  }
+
+  .progress {
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress .bar {
+    height: 100%;
+    background: var(--rose);
+    width: 0%;
+    transition: width 0.4s linear;
+  }
+
+  /* ============ End phase (vote prompt) ============ */
+  .end {
+    display: none;
+    padding: 64px;
+    min-height: 80vh;
+    flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .app.ended .end { display: flex; }
+
+  .end .big-question {
+    font: 800 56px/1.3 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+  .end .big-question .accent { color: var(--rose-deep); }
+  .end .lead {
+    font: 500 18px/1.7 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); max-width: 640px;
+  }
+
+  .vote-options {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    width: 100%; max-width: 880px;
+    margin-top: 14px;
+  }
+  .vote-options .opt {
+    padding: 18px 12px;
+    background: var(--paper-2);
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    text-align: center;
+    transition: transform 0.15s, border-color 0.15s, background 0.15s;
+  }
+  .vote-options .opt .nm {
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.18em;
+    margin-bottom: 8px;
+  }
+  .vote-options .opt .lab {
+    font: 800 20px/1.3 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink);
+  }
+  .vote-options .opt:hover {
+    transform: translateY(-3px);
+    border-color: var(--rose);
+    background: var(--rose-soft);
+  }
+
+  .slido-box {
+    margin-top: 18px;
+    padding: 28px 36px;
+    background: var(--dark);
+    color: white;
+    border-radius: 18px;
+    max-width: 820px; width: 100%;
+    display: flex; align-items: center; gap: 28px;
+    box-shadow: 0 20px 60px rgba(26,32,50,0.35);
+  }
+  .slido-box .lab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    background: var(--ecru);
+    color: var(--dark);
+    border-radius: 999px;
+    font: 800 11px/1 "Roboto", sans-serif;
+    letter-spacing: 0.22em;
+  }
+  .slido-box .copy {
+    flex: 1; text-align: left;
+    font: 600 15px/1.5 "Zen Kaku Gothic New", sans-serif;
+  }
+  .slido-box .copy strong { color: var(--ecru); font-weight: 800; }
+  .slido-box .url {
+    font: 700 22px/1 "Roboto", monospace;
+    color: var(--ecru); letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .end .reveal-btn {
+    margin-top: 18px;
+    background: var(--ink);
+    color: white;
+    padding: 14px 36px;
+    border: none;
+    border-radius: 999px;
+    font: 700 14px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+  }
+  .end .reveal-btn:hover { background: var(--rose-deep); transform: translateY(-2px); }
+
+  .end .replay {
+    background: transparent;
+    color: var(--ink-3);
+    border: 1.5px solid var(--ink-4);
+    padding: 10px 22px;
+    border-radius: 999px;
+    font: 600 12px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  /* ============ Reveal phase ============ */
+  .reveal-final {
+    display: none;
+    padding: 56px 64px 40px;
+  }
+  .reveal-final.show { display: block; }
+
+  .reveal-final .answer-card {
+    background: linear-gradient(135deg, var(--paper-dark) 0%, #1a1f2b 100%);
+    border-radius: 22px;
+    padding: 56px 48px;
+    color: white;
+    margin-bottom: 32px;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .reveal-final .answer-card::before {
+    content: ""; position: absolute; inset: -40%;
+    background: radial-gradient(circle, rgba(193,129,151,0.18) 0%, transparent 60%);
+  }
+  .reveal-final .answer-card > * { position: relative; }
+  .reveal-final .answer-card .lab {
+    font: 800 11px/1 "Roboto", sans-serif;
+    color: rgba(255,255,255,0.5); letter-spacing: 0.24em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .reveal-final .answer-card .num {
+    font: 900 196px/0.9 "Roboto", sans-serif;
+    letter-spacing: -0.04em;
+    color: white;
+  }
+  .reveal-final .answer-card .num .unit {
+    font-size: 84px; font-weight: 700; color: var(--rose); margin-left: 18px;
+  }
+  .reveal-final .answer-card .msg {
+    margin-top: 28px;
+    font: 700 24px/1.5 "Zen Kaku Gothic New", sans-serif;
+    color: rgba(255,255,255,0.92);
+  }
+  .reveal-final .answer-card .msg .accent { color: var(--ecru); }
+
+  .all-faces {
+    display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 4px;
+    background: var(--paper-dark);
+  }
+  .all-faces .mini {
+    aspect-ratio: 1; border-radius: 4px;
+    overflow: hidden;
+    background: #14171F;
+  }
+  .all-faces .mini img {
+    width: 100%; height: 100%; display: block;
+    object-fit: cover;
+    filter: saturate(0.95);
+  }
+
+  .footnote {
+    margin-top: 24px;
+    font: 500 13px/1.75 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3);
+  }
+  .footnote strong { color: var(--ink); font-weight: 700; }
+  .footnote .accent { color: var(--rose-deep); font-weight: 700; }
+
+  footer {
+    padding: 28px 64px 40px;
+    font: 500 11px/1.7 "Zen Maru Gothic", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .app.flashing footer { display: none; }
+  footer a { color: var(--ink-3); text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header>
+    <div class="eyebrow"><span class="dot"></span>SYNTHETIC PORTRAITS · LIVE POLL <span class="step">3 MIN · 100 FACES · 2 CYCLES</span></div>
+    <h1><span class="accent">100 人</span> の、顔写真。<br>― さあ、何人が本物?</h1>
+    <div class="subtitle">これから、 <strong>10 人ずつ・5 秒</strong> で 100 人の顔が流れます(1 サイクル 50 秒)。<br>これを <strong>2 サイクル</strong> 繰り返します ― 2 周目で、もう一度よく見てみてください。<br>その中に「実在する人物」が、何人いるでしょうか。 ― 終わったら、Slido で投票してください。</div>
+  </header>
+
+  <div class="intro-actions">
+    <button class="btn-start" id="startBtn"><span class="icon">▶</span>スタート(約 100 秒 / 2 サイクル)</button>
+  </div>
+
+  <div class="flash">
+    <div class="meta">
+      <div class="left">100 PORTRAITS · 10 / FRAME · 5 SEC · <span id="cycleLab">CYCLE 1 / 2</span></div>
+      <div class="counter"><span id="cnt">0</span><span class="total">/ 100</span></div>
+    </div>
+    <div class="trio" id="trio">
+      <div class="face" id="f0"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f1"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f2"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f3"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f4"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f5"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f6"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f7"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f8"><img alt=""><div class="seq"></div></div>
+      <div class="face" id="f9"><img alt=""><div class="seq"></div></div>
+    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+
+    <div class="pause-overlay" id="pauseOverlay">
+      <div class="lab" id="pauseLab">CYCLE 1 / 2 — FINISHED</div>
+      <div class="ttl" id="pauseTtl">1 サイクル目、終了。<br>もう一度見ますか? それとも <span class="accent">2 サイクル目</span> へ?</div>
+      <div class="btns">
+        <button class="btn-retry" id="retryBtn">↻ もう一度このサイクルを見る</button>
+        <button class="btn-next" id="nextBtn">▶ 2 サイクル目へ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="end">
+    <div class="big-question">さあ、何人が、<span class="accent">本物</span>?</div>
+    <div class="lead">いま流れた 100 人。<br>あなたの感覚で、Slido で投票してください。</div>
+
+    <div class="vote-options">
+      <div class="opt"><div class="nm">A</div><div class="lab">0 人</div></div>
+      <div class="opt"><div class="nm">B</div><div class="lab">1〜10 人</div></div>
+      <div class="opt"><div class="nm">C</div><div class="lab">11〜30 人</div></div>
+      <div class="opt"><div class="nm">D</div><div class="lab">31〜70 人</div></div>
+      <div class="opt"><div class="nm">E</div><div class="lab">71〜100 人</div></div>
+    </div>
+
+    <div class="slido-box">
+      <div class="lab">SLIDO</div>
+      <div class="copy">
+        スマホで <strong>slido.com</strong> にアクセス → イベントコードを入力<br>
+        <a class="url" href="#" id="slidoUrl">#XXXXXX</a>
+      </div>
+    </div>
+
+    <button class="reveal-btn" id="revealBtn">答えを見る</button>
+    <button class="replay" id="replayBtn">もう一度フラッシュを見る</button>
+  </div>
+
+  <div class="reveal-final" id="revealFinal">
+    <div class="answer-card">
+      <div class="lab">ANSWER — REVEAL</div>
+      <div class="num">0<span class="unit">人</span></div>
+      <div class="msg">100 人 全員 が、<span class="accent">AI によって生成された</span><br>実在しない人物だった。</div>
+    </div>
+    <div class="all-faces" id="allFaces"></div>
+    <div class="footnote">
+      これらの顔は、NVIDIA が公開した <strong>StyleGAN</strong> 系の生成モデルによって作られたもの。<br>
+      モデルが学習したのは、実在する人々の顔写真の集合 ― そこから「<span class="accent">もっともらしい新しい顔</span>」を作り出す。<br>
+      これが <strong>生成 AI(Generative Model)</strong> の核 ― 第 3 幕で、その仕組みを数式で見ていきます。
+    </div>
+  </div>
+
+  <footer>
+    Faces: <a href="https://thispersondoesnotexist.com" target="_blank">thispersondoesnotexist.com</a>(StyleGAN by NVIDIA Research) ― 全 100 枚 AI 生成 / 実在しない人物<br>
+    教育目的のオフライン使用 ― 東進ハイスクール スーパーエリートコース「1% 未満から生まれる知」/ 第 0 幕 デモ用
+  </footer>
+</div>
+
+<script>
+// =============================================================================
+// Slido event code (変更してください — 当日の Slido イベントコードに)
+// =============================================================================
+const SLIDO_CODE = "#1XXXXXX";          // 例: "#3284625"
+const SLIDO_URL  = "https://slido.com"; // 当日 URL に置き換え
+
+document.getElementById("slidoUrl").textContent = SLIDO_CODE;
+document.getElementById("slidoUrl").href = SLIDO_URL;
+
+// =============================================================================
+// Constants
+// =============================================================================
+const TOTAL = 100;                      // 100 顔(faces/face_001〜face_100 を全て使用)
+const BATCH = 10;                       // 1 パネル 10 人
+const INTERVAL_MS = 5000;               // 5 秒
+const PANELS_PER_CYCLE = TOTAL / BATCH; // 10 パネル(100 顔 / 10)
+const TOTAL_CYCLES = 2;                 // 2 サイクル
+
+const FACES = Array.from({ length: TOTAL }, (_, i) =>
+  `faces/face_${String(i + 1).padStart(3, "0")}.jpg`
+);
+
+// =============================================================================
+// Preload
+// =============================================================================
+const preloaded = [];
+function preload() {
+  FACES.forEach((src, i) => {
+    const img = new Image();
+    img.src = src;
+    preloaded.push(img);
+  });
+}
+preload();
+
+// =============================================================================
+// Flash sequence
+// =============================================================================
+const app = document.getElementById("app");
+const slots = Array.from({ length: BATCH }, (_, i) => document.getElementById(`f${i}`));
+const bar = document.getElementById("bar");
+const cnt = document.getElementById("cnt");
+const cycleLab = document.getElementById("cycleLab");
+const pauseLab = document.getElementById("pauseLab");
+const pauseTtl = document.getElementById("pauseTtl");
+const nextBtn = document.getElementById("nextBtn");
+
+function pad(n, w) { return String(n).padStart(w, "0"); }
+
+function showBatch(start) {
+  for (let s = 0; s < BATCH; s++) {
+    const idx = start + s;
+    const slot = slots[s];
+    const img = slot.querySelector("img");
+    const seq = slot.querySelector(".seq");
+    if (idx < TOTAL) {
+      slot.classList.remove("empty");
+      img.src = FACES[idx];
+      img.style.display = "block";
+      seq.textContent = pad(idx + 1, 3);
+    } else {
+      slot.classList.add("empty");
+      img.style.display = "none";
+      seq.textContent = "";
+    }
+  }
+}
+
+let timer = null;
+let panelInCycle = 0;
+let currentCycle = 1;
+
+function setCycleLabel() {
+  cycleLab.textContent = `CYCLE ${currentCycle} / ${TOTAL_CYCLES}`;
+}
+
+function startFlash() {
+  app.classList.add("flashing");
+  app.classList.remove("ended", "paused");
+  currentCycle = 1;
+  panelInCycle = 0;
+  setCycleLabel();
+  tick();
+}
+
+function tick() {
+  if (panelInCycle >= PANELS_PER_CYCLE) {
+    // サイクル終了 → ポーズ
+    showPause();
+    return;
+  }
+  const start = panelInCycle * BATCH;
+  showBatch(start);
+  const lastShown = Math.min(start + BATCH, TOTAL);
+  cnt.textContent = lastShown;
+  bar.style.width = ((lastShown / TOTAL) * 100).toFixed(1) + "%";
+  panelInCycle++;
+  timer = setTimeout(tick, INTERVAL_MS);
+}
+
+function showPause() {
+  app.classList.remove("flashing");
+  app.classList.add("paused");
+  if (currentCycle < TOTAL_CYCLES) {
+    pauseLab.textContent = `CYCLE ${currentCycle} / ${TOTAL_CYCLES} — FINISHED`;
+    pauseTtl.innerHTML = `${currentCycle} サイクル目、終了。<br>もう一度見ますか? それとも <span class="accent">${currentCycle + 1} サイクル目</span> へ?`;
+    nextBtn.textContent = `▶ ${currentCycle + 1} サイクル目へ`;
+  } else {
+    pauseLab.textContent = `ALL ${TOTAL_CYCLES} CYCLES — FINISHED`;
+    pauseTtl.innerHTML = `全 ${TOTAL_CYCLES} サイクル、終了。<br>もう一度見ますか? それとも <span class="accent">投票</span> へ?`;
+    nextBtn.textContent = `▶ 投票へ進む`;
+  }
+}
+
+function retryCycle() {
+  app.classList.remove("paused");
+  app.classList.add("flashing");
+  panelInCycle = 0;
+  bar.style.width = "0%";
+  cnt.textContent = "0";
+  tick();
+}
+
+function advanceFromPause() {
+  if (currentCycle < TOTAL_CYCLES) {
+    currentCycle++;
+    setCycleLabel();
+    app.classList.remove("paused");
+    app.classList.add("flashing");
+    panelInCycle = 0;
+    bar.style.width = "0%";
+    cnt.textContent = "0";
+    tick();
+  } else {
+    // go to vote
+    showEnd();
+  }
+}
+
+function showEnd() {
+  app.classList.remove("flashing", "paused");
+  app.classList.add("ended");
+  document.getElementById("revealFinal").classList.remove("show");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function replay() {
+  document.getElementById("revealFinal").classList.remove("show");
+  startFlash();
+}
+
+// =============================================================================
+// Reveal (answer)
+// =============================================================================
+function renderAllFaces() {
+  const wrap = document.getElementById("allFaces");
+  if (wrap.children.length === TOTAL) return; // already rendered
+  wrap.innerHTML = "";
+  FACES.forEach((src, i) => {
+    const d = document.createElement("div");
+    d.className = "mini";
+    d.innerHTML = `<img src="${src}" alt="" loading="lazy">`;
+    wrap.appendChild(d);
+  });
+}
+
+function showReveal() {
+  renderAllFaces();
+  document.getElementById("revealFinal").classList.add("show");
+  setTimeout(() => {
+    document.getElementById("revealFinal").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 120);
+}
+
+// =============================================================================
+// Bindings
+// =============================================================================
+document.getElementById("startBtn").addEventListener("click", startFlash);
+document.getElementById("revealBtn").addEventListener("click", showReveal);
+document.getElementById("replayBtn").addEventListener("click", replay);
+document.getElementById("retryBtn").addEventListener("click", retryCycle);
+document.getElementById("nextBtn").addEventListener("click", advanceFromPause);
+
+// Vote option click → little visual feedback
+document.querySelectorAll(".vote-options .opt").forEach(opt => {
+  opt.addEventListener("click", () => {
+    document.querySelectorAll(".vote-options .opt").forEach(o => o.style.background = "");
+    opt.style.background = "var(--rose-soft)";
+    opt.style.borderColor = "var(--rose-deep)";
+  });
+});
+</script>
+</body>
+</html>

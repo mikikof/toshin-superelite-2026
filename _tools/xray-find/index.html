@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>胸部 X 線 16 枚 ― 見落とされやすい所見は、どれか</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Zen+Maru+Gothic:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:        #FFFFFF;
+    --paper-2:      #FAF9F6;
+    --paper-3:      #F4F2EC;
+    --paper-dark:   #0A0B0F;
+    --ink:          #1A1D24;
+    --ink-2:        #2F343E;
+    --ink-3:        #5A6070;
+    --ink-4:        #9DA2AE;
+    --line:         #E5E1D6;
+    --line-2:       #EFEDE5;
+
+    --green:        #88B69C;
+    --green-soft:   #E2EEE7;
+    --green-deep:   #5B8C72;
+
+    --blue:         #5E7BC6;
+    --blue-soft:    #E1E7F4;
+    --rose:         #C18197;
+    --rose-soft:    #F2E2E6;
+    --rose-deep:    #9E5B71;
+    --amber:        #C4A572;
+    --amber-soft:   #F2E6CC;
+    --dark:         #1A2032;
+    --ecru:         #ECD8A6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #EAE7DE; min-height: 100vh; }
+  body {
+    font-family: "Zen Kaku Gothic New", "Inter", system-ui, sans-serif;
+    color: var(--ink); font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    padding: 56px 24px 120px;
+  }
+
+  /* ============ Frame ============ */
+  .app {
+    max-width: 1100px; margin: 0 auto;
+    background: var(--paper);
+    border-radius: 24px;
+    box-shadow: 0 40px 100px rgba(26,29,36,0.18);
+    overflow: hidden;
+  }
+
+  header {
+    padding: 56px 64px 40px;
+    position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ""; position: absolute; top: -100px; right: -100px;
+    width: 320px; height: 320px; border-radius: 50%;
+    background: var(--green-soft); opacity: 0.5; z-index: 0;
+  }
+  header::after {
+    content: ""; position: absolute; bottom: -120px; left: -120px;
+    width: 360px; height: 360px; border-radius: 50%;
+    background: radial-gradient(circle, var(--amber-soft) 0%, transparent 70%);
+    z-index: 0;
+  }
+  header > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: 700 11px/1 "Roboto", sans-serif;
+    color: var(--green-deep); letter-spacing: 0.22em; text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+  .eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-deep); }
+  .eyebrow .step { color: var(--ink-4); font-weight: 500; margin-left: 12px; }
+
+  h1 {
+    font-family: "Zen Kaku Gothic New", sans-serif;
+    font-size: 40px; line-height: 1.4; font-weight: 700;
+    letter-spacing: 0.005em; margin-bottom: 18px;
+    max-width: 820px;
+  }
+  h1 .accent { color: var(--green-deep); }
+  .subtitle {
+    font-size: 17px; line-height: 1.75; font-weight: 500;
+    color: var(--ink-3); letter-spacing: 0.02em; max-width: 820px;
+  }
+
+  /* ============ Grid ============ */
+  .grid-wrap { padding: 8px 56px 32px; }
+  .grid-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 22px;
+  }
+  .grid-meta .left {
+    font: 700 12px/1 "Roboto", sans-serif;
+    color: var(--ink-2); letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  .grid-meta .left .sub {
+    margin-top: 8px;
+    font: 500 12px/1 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.06em;
+    text-transform: none;
+  }
+  .grid-meta .right {
+    font: 500 11px/1.6 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.06em; text-align: right;
+  }
+  .grid-meta .right strong { color: var(--ink); font-weight: 700; }
+
+  .grid-wrap-inner {
+    position: relative;
+    background: #06070A;
+    border-radius: 12px;
+    padding: 8px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .xray {
+    aspect-ratio: 1;
+    background: #0A0B0F;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.18s, box-shadow 0.18s, outline 0.12s;
+    outline: 1.5px solid transparent;
+  }
+  .xray:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 24px rgba(136,182,156,0.45);
+    z-index: 5;
+    outline-color: var(--green);
+  }
+  .xray.selected {
+    outline: 2px solid var(--green);
+    transform: scale(1.04);
+    box-shadow: 0 8px 28px rgba(136,182,156,0.55);
+    z-index: 5;
+  }
+  .xray.revealed-finding {
+    outline: 2.5px solid var(--ecru);
+    box-shadow: 0 0 0 5px rgba(236,216,166,0.4), 0 12px 36px rgba(236,216,166,0.5);
+    animation: findingPulse 1.6s ease-out;
+    z-index: 8;
+  }
+  @keyframes findingPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1.04); }
+  }
+  .xray.dimmed { opacity: 0.34; }
+  .xray img {
+    width: 100%; height: 100%; display: block;
+    object-fit: cover;
+    filter: contrast(1.05) brightness(1.0);
+  }
+  .xray .ev-num {
+    position: absolute; left: 5px; top: 4px;
+    font: 700 9px/1 "Roboto", sans-serif;
+    color: rgba(255,255,255,0.45); letter-spacing: 0.08em;
+    pointer-events: none;
+    text-shadow: 0 0 6px rgba(0,0,0,0.9);
+  }
+
+  /* ============ Click preview ============ */
+  .xray-preview {
+    position: absolute;
+    width: 280px;
+    background: var(--paper-dark);
+    border: 1.5px solid var(--green);
+    border-radius: 14px;
+    padding: 14px 14px 16px;
+    pointer-events: none;
+    box-shadow: 0 18px 48px rgba(0,0,0,0.55), 0 0 0 4px rgba(136,182,156,0.18);
+    z-index: 20;
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.14s, transform 0.14s, left 0.16s, top 0.16s;
+  }
+  .xray-preview.show { opacity: 1; transform: scale(1); }
+  .xray-preview .pv-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .xray-preview .pv-tag {
+    font: 700 9.5px/1 "Roboto", sans-serif;
+    color: rgba(255,255,255,0.45); letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .xray-preview .pv-coord {
+    font: 700 11px/1 "Roboto", monospace;
+    color: var(--ecru); letter-spacing: 0.04em;
+  }
+  .xray-preview .pv-img {
+    width: 100%; aspect-ratio: 1;
+    background: #07080A;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+  }
+  .xray-preview .pv-img img {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+    filter: contrast(1.05);
+  }
+  .xray-preview .pv-img .annot {
+    position: absolute;
+    pointer-events: none;
+    display: none;
+  }
+  .xray-preview.finding .pv-img .annot { display: block; }
+  .xray-preview .pv-foot {
+    margin-top: 10px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font: 500 10.5px/1.4 "Zen Maru Gothic", sans-serif;
+    color: rgba(255,255,255,0.5); letter-spacing: 0.04em;
+  }
+  .xray-preview .pv-foot strong { color: rgba(255,255,255,0.88); font-weight: 700; }
+  .xray-preview.finding {
+    border-color: var(--ecru);
+    box-shadow: 0 18px 48px rgba(236,216,166,0.30), 0 0 0 4px rgba(236,216,166,0.28);
+  }
+  .xray-preview.finding .pv-tag { color: var(--ecru); }
+  .xray-preview.finding .pv-foot strong { color: var(--ecru); }
+
+  /* ============ Action bar ============ */
+  .actions {
+    position: sticky; bottom: 24px;
+    margin: 24px 64px 0; z-index: 10;
+  }
+  .actions-inner {
+    background: var(--dark); color: white;
+    border-radius: 999px;
+    padding: 16px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 20px 60px rgba(26,32,50,0.35);
+    gap: 24px;
+  }
+  .actions .status {
+    font: 600 13.5px/1.4 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.04em; flex: 1;
+  }
+  .actions .status .label { color: #B7C2DA; font-weight: 500; }
+  .actions .status .picked { color: var(--ecru); font-weight: 700; margin-left: 12px; font-family: "Roboto", monospace; }
+  .actions button {
+    background: var(--paper); color: var(--dark);
+    border: none; padding: 11px 26px; border-radius: 999px;
+    font: 700 13px/1 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.08em; cursor: pointer;
+    transition: background 0.18s, transform 0.18s;
+    flex-shrink: 0;
+  }
+  .actions button:hover:not(:disabled) {
+    background: var(--ecru); transform: translateY(-1px);
+  }
+  .actions button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .actions button.secondary {
+    background: transparent; color: white;
+    border: 1.5px solid rgba(255,255,255,0.35);
+  }
+  .actions button.secondary:hover {
+    background: rgba(255,255,255,0.08); transform: none;
+  }
+
+  /* ============ Reveal phase ============ */
+  .reveal {
+    display: none;
+    padding: 36px 56px 12px;
+  }
+  .reveal.show { display: block; }
+
+  .verdict {
+    display: flex; align-items: center; gap: 16px;
+    padding: 22px 28px;
+    background: linear-gradient(135deg, var(--green-soft) 0%, white 80%);
+    border: 1.5px solid var(--green);
+    border-radius: 18px;
+    margin-bottom: 28px;
+  }
+  .verdict.correct {
+    background: linear-gradient(135deg, var(--green-soft) 0%, white 80%);
+    border-color: var(--green);
+  }
+  .verdict.missed {
+    background: linear-gradient(135deg, var(--rose-soft) 0%, white 80%);
+    border-color: var(--rose);
+  }
+  .verdict .icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--green); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font: 800 22px/1 "Roboto", sans-serif;
+    flex-shrink: 0;
+  }
+  .verdict.missed .icon { background: var(--rose); }
+  .verdict h2 {
+    font: 700 22px/1.5 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink); letter-spacing: 0.005em;
+  }
+  .verdict h2 .accent { color: var(--green-deep); }
+  .verdict.missed h2 .accent { color: var(--rose-deep); }
+
+  .real-stage {
+    background: #06070A;
+    border-radius: 20px;
+    padding: 28px;
+    position: relative; overflow: hidden;
+  }
+  .real-stage .head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 16px;
+    color: white;
+  }
+  .real-stage .head .title {
+    font: 700 16px/1.4 "Zen Kaku Gothic New", sans-serif;
+    letter-spacing: 0.01em;
+  }
+  .real-stage .head .meta {
+    font: 500 11px/1.4 "Roboto", monospace;
+    color: rgba(255,255,255,0.6); letter-spacing: 0.06em;
+  }
+  .real-stage .big-xray {
+    background: #0A0B0F;
+    border-radius: 12px;
+    aspect-ratio: 1;
+    max-width: 460px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+  }
+  .real-stage .big-xray img {
+    width: 100%; height: 100%; display: block;
+    object-fit: contain;
+    filter: contrast(1.05);
+  }
+  .real-stage .big-xray .annot {
+    position: absolute;
+    pointer-events: none;
+  }
+  /* Cardiomegaly annotation - 心胸郭比 */
+  .annot-heart {
+    border: 2px dashed #ECD8A6;
+    border-radius: 50%;
+    box-shadow: 0 0 16px rgba(236,216,166,0.4);
+  }
+  .annot-thorax-line {
+    border-top: 1px solid rgba(236,216,166,0.5);
+  }
+  .annot-label {
+    position: absolute;
+    padding: 4px 8px;
+    background: rgba(236,216,166,0.95);
+    color: #14171F;
+    font: 700 10px/1 "Roboto", sans-serif;
+    letter-spacing: 0.06em;
+    border-radius: 4px;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .finding-callout {
+    margin-top: 22px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .finding-callout .item {
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 12px;
+    color: white;
+  }
+  .finding-callout .item .label {
+    font: 700 10px/1 "Roboto", sans-serif;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55); margin-bottom: 8px;
+  }
+  .finding-callout .item .val {
+    font: 800 22px/1.1 "Roboto", sans-serif;
+    letter-spacing: 0.005em; margin-bottom: 6px;
+  }
+  .finding-callout .item .val .unit {
+    font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55); margin-left: 4px;
+  }
+  .finding-callout .item .note {
+    font: 500 11px/1.55 "Zen Maru Gothic", sans-serif;
+    color: rgba(255,255,255,0.66);
+  }
+
+  .reveal-foot {
+    padding: 22px 0 0;
+    font: 500 13px/1.75 "Zen Kaku Gothic New", sans-serif;
+    color: var(--ink-3); letter-spacing: 0.02em;
+  }
+  .reveal-foot strong { color: var(--ink); font-weight: 700; }
+  .reveal-foot .accent { color: var(--green-deep); font-weight: 700; }
+
+  footer {
+    padding: 28px 64px 40px; margin-top: 8px;
+    font: 500 11px/1.7 "Zen Maru Gothic", sans-serif;
+    color: var(--ink-4); letter-spacing: 0.04em;
+    text-align: center;
+  }
+  footer a { color: var(--ink-3); text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="eyebrow"><span class="dot"></span>MEDICAL IMAGING · CHEST X-RAY DEMO <span class="step" id="phaseLabel">STEP 1 / 2 — SEARCH</span></div>
+    <h1>胸部 X 線 <span class="accent">16 枚</span>。<br>所見があるのは、どれか。</h1>
+    <div class="subtitle">画面の 16 枚は、いずれも実在する患者の胸部 X 線(公開データセット由来)。<br>そのうち <span style="color:var(--green-deep);font-weight:700">ちょうど 1 枚</span> に、放射線科医が注目するような <strong>異常所見</strong> が写っています ― 各セルをクリックして拡大できます。</div>
+  </header>
+
+  <div class="grid-wrap">
+    <div class="grid-meta">
+      <div class="left">
+        CHEST X-RAY VIEWER
+        <div class="sub">16 patients · PA / AP view · 公開データセット由来</div>
+      </div>
+      <div class="right">
+        seed <strong id="seedTxt">—</strong><br>
+        Finding <strong>1</strong> 件 / 正常 <strong>15</strong> 件
+      </div>
+    </div>
+    <div class="grid-wrap-inner" id="gridWrapInner">
+      <div class="grid" id="grid"></div>
+      <div class="xray-preview" id="preview">
+        <div class="pv-head">
+          <span class="pv-tag">CHEST PA/AP</span>
+          <span class="pv-coord" id="pvCoord">—</span>
+        </div>
+        <div class="pv-img" id="pvImg">
+          <img id="pvImgEl" src="" alt="">
+          <div class="annot annot-heart" id="pvAnnotHeart"></div>
+        </div>
+        <div class="pv-foot">
+          <span>所見: <strong id="pvFinding">なし</strong></span>
+          <span id="pvKind">正常</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal" id="reveal">
+    <div class="verdict" id="verdict">
+      <div class="icon" id="verdictIcon">!</div>
+      <h2 id="verdictText"></h2>
+    </div>
+
+    <div class="real-stage">
+      <div class="head">
+        <div class="title">所見 ― 心拡大 (Cardiomegaly)</div>
+        <div class="meta" id="findingMeta">Case <span id="findingId">—</span> · NIH ChestX-ray14 · CC0</div>
+      </div>
+      <div class="big-xray" id="bigXray">
+        <img id="bigXrayImg" src="" alt="">
+        <div class="annot annot-heart" id="bigAnnotHeart" style="left: 32%; top: 44%; width: 38%; height: 38%;"></div>
+        <div class="annot annot-thorax-line" id="bigAnnotThorax" style="left: 10%; right: 10%; top: 56%; height: 1px;"></div>
+        <div class="annot annot-label" style="left: 64%; top: 41%;">HEART</div>
+        <div class="annot annot-label" style="left: 12%; top: 58%; background: rgba(255,255,255,0.85);">THORAX</div>
+      </div>
+      <div class="finding-callout">
+        <div class="item">
+          <div class="label">SIGNAL 1 ― 所見</div>
+          <div class="val">Cardiomegaly</div>
+          <div class="note">心拡大。 心陰影が拡大している状態</div>
+        </div>
+        <div class="item">
+          <div class="label">SIGNAL 2 ― 指標</div>
+          <div class="val">CTR <span class="unit">&gt; 0.5</span></div>
+          <div class="note">心胸郭比 = 心横径 / 胸郭横径。 PA 正面像で 0.5 超なら心拡大の疑い(AP 像では過大評価に注意)</div>
+        </div>
+        <div class="item">
+          <div class="label">SIGNAL 3 ― ラベル</div>
+          <div class="val">NLP ラベル</div>
+          <div class="note">NIH ChestX-ray14 が放射線レポートから NLP で自動抽出したラベルで「Cardiomegaly」とされた症例(医師の per-image 確定診断ではない)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-foot">
+      心拡大は、 <strong>サムネイル サイズではほぼ判別不可能</strong>。 拡大しても、慣れていない目では他の正常像と区別が難しい。<br>
+      臨床支援 AI や研究では、<span class="accent">心胸郭比 (CTR) の自動測定</span> や心拡大候補の提示が行われています ―
+      胸部 X 線 AI では、ChestX-ray14 のような大規模データセットで学習させた CNN 系が代表的手法で、近年は Transformer 系も使われます。
+    </div>
+  </div>
+
+  <div class="actions">
+    <div class="actions-inner">
+      <div class="status" id="status">
+        <span class="label">クリックで 1 枚ずつ拡大表示 ― 所見が見える 1 枚を選んでみてください。</span>
+      </div>
+      <button id="resetBtn" class="secondary" hidden>シャッフル</button>
+      <button id="revealBtn">答えを見る</button>
+    </div>
+  </div>
+
+  <footer>
+    Images: <a href="https://nihcc.app.box.com/v/ChestXray-NIHCC" target="_blank">NIH ChestX-ray14</a>(CC0) + <a href="https://github.com/ieee8023/covid-chestxray-dataset" target="_blank">COVID-19 image data collection (Cohen et al.)</a>(個々の論文の元ライセンスに従う)<br>
+    教育目的の限定的使用 ― 臨床診断には使用不可。 東進ハイスクール スーパーエリートコース「1% 未満から生まれる知」/ 第 0 幕 デモ用
+  </footer>
+</div>
+
+<script>
+// =============================================================================
+// rng
+// =============================================================================
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = a;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pad(n, w) { return String(n).padStart(w, "0"); }
+
+// =============================================================================
+// Image set
+// =============================================================================
+const NORMAL_IMAGES = [
+  "images/covid_normal_01.jpeg",
+  "images/covid_normal_02.jpg",
+  "images/covid_normal_03.png",
+  "images/covid_normal_04.png",
+  "images/covid_normal_05.png",
+  "images/covid_normal_06.jpg",
+  "images/covid_normal_07.jpg",
+  "images/covid_normal_08.png",
+  "images/covid_normal_09.png",
+  "images/covid_normal_10.png",
+  "images/covid_normal_11.jpeg",
+  "images/covid_normal_12.jpg",
+  "images/covid_normal_13.jpg",
+  "images/covid_normal_15.jpeg",
+  "images/nih_00027426.png",
+];
+// Cardiomegaly 所見あり
+const FINDING_IMAGE = "images/nih_00000001.png";
+
+// =============================================================================
+// State
+// =============================================================================
+const TOTAL = 16;
+const state = {
+  order: [],            // [{src, abnormal, originIndex}]
+  findingIdx: -1,
+  selectedIdx: null,
+  revealed: false,
+  seed: 0,
+};
+
+function shuffleSeeded(arr, rng) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function idxLabel(i) { return `#${pad(i + 1, 2)}`; }
+
+function init(seed) {
+  state.seed = seed;
+  document.getElementById("seedTxt").textContent = seed;
+
+  const rng = mulberry32(seed);
+  // Shuffle normal images
+  const normalsShuffled = shuffleSeeded(NORMAL_IMAGES, rng);
+  // Take 15
+  const normals = normalsShuffled.slice(0, 15);
+  // Build order: 15 normals + 1 finding, then shuffle
+  const all = normals.map(src => ({ src, abnormal: false }));
+  all.push({ src: FINDING_IMAGE, abnormal: true });
+  const ordered = shuffleSeeded(all, rng);
+
+  state.order = ordered;
+  state.findingIdx = ordered.findIndex(x => x.abnormal);
+  state.selectedIdx = null;
+  state.revealed = false;
+
+  render();
+  resetReveal();
+}
+
+// =============================================================================
+// Render grid
+// =============================================================================
+function render() {
+  const gridEl = document.getElementById("grid");
+  gridEl.innerHTML = "";
+  state.order.forEach((x, i) => {
+    const el = document.createElement("div");
+    el.className = "xray";
+    el.dataset.idx = i;
+    el.innerHTML = `<img src="${x.src}" alt="" loading="lazy"><div class="ev-num">${pad(i + 1, 2)}</div>`;
+    el.addEventListener("click", () => onCellClick(i));
+    gridEl.appendChild(el);
+  });
+  updateStatus();
+}
+
+function onCellClick(i) {
+  if (!state.revealed) {
+    state.selectedIdx = i;
+    document.querySelectorAll(".xray").forEach((el, idx) => {
+      el.classList.toggle("selected", idx === i);
+    });
+    updateStatus();
+  }
+  showPreview(i);
+}
+
+// =============================================================================
+// Click preview
+// =============================================================================
+function showPreview(i) {
+  const x = state.order[i];
+  const preview = document.getElementById("preview");
+  const cellEl = document.querySelector(`.xray[data-idx="${i}"]`);
+  const wrapEl = document.getElementById("gridWrapInner");
+  if (!cellEl) return;
+
+  const cellRect = cellEl.getBoundingClientRect();
+  const wrapRect = wrapEl.getBoundingClientRect();
+
+  const cellLeftRel = cellRect.left - wrapRect.left;
+  const cellTopRel  = cellRect.top  - wrapRect.top;
+  const cellW = cellRect.width;
+  const cellH = cellRect.height;
+
+  const PREV_W = 280;
+  const PREV_H = 380;
+
+  let left = cellLeftRel + cellW + 14;
+  if (left + PREV_W > wrapRect.width - 4) {
+    left = cellLeftRel - PREV_W - 14;
+  }
+  left = Math.max(4, left);
+
+  let top = cellTopRel + cellH / 2 - PREV_H / 2;
+  top = Math.max(4, Math.min(top, wrapRect.height - PREV_H - 4));
+
+  preview.style.left = left + "px";
+  preview.style.top = top + "px";
+  document.getElementById("pvCoord").textContent = idxLabel(i);
+
+  const pvImgEl = document.getElementById("pvImgEl");
+  pvImgEl.src = x.src;
+
+  const isRevealedFinding = state.revealed && i === state.findingIdx;
+
+  // annotation 位置(プレビュー、相対 %)
+  const heart = document.getElementById("pvAnnotHeart");
+  if (isRevealedFinding) {
+    heart.style.left = "32%";
+    heart.style.top = "44%";
+    heart.style.width = "38%";
+    heart.style.height = "38%";
+  }
+
+  document.getElementById("pvFinding").textContent =
+    isRevealedFinding ? "Cardiomegaly (心拡大)" : "なし";
+  document.getElementById("pvKind").textContent =
+    isRevealedFinding ? "FINDING" : "正常";
+  preview.classList.toggle("finding", isRevealedFinding);
+  preview.classList.add("show");
+}
+
+// =============================================================================
+// Status / reveal / reset
+// =============================================================================
+function updateStatus() {
+  const statusEl = document.getElementById("status");
+  const btnEl = document.getElementById("revealBtn");
+
+  if (state.revealed) {
+    statusEl.innerHTML = `<span class="label">答え:</span><span class="picked">FINDING = ${idxLabel(state.findingIdx)}</span>`;
+    btnEl.disabled = true;
+    return;
+  }
+  if (state.selectedIdx === null) {
+    statusEl.innerHTML = `<span class="label">クリックで 1 枚ずつ拡大表示 ― 所見が見える 1 枚を選んでみてください。</span>`;
+  } else {
+    statusEl.innerHTML = `<span class="label">最後にクリックしたX線:</span><span class="picked">${idxLabel(state.selectedIdx)}</span>`;
+  }
+  btnEl.disabled = false;
+}
+
+function reveal() {
+  if (state.revealed) return;
+  state.revealed = true;
+
+  document.querySelectorAll(".xray").forEach((el, idx) => {
+    el.classList.remove("selected");
+    if (idx === state.findingIdx) {
+      el.classList.add("revealed-finding");
+    } else {
+      el.classList.add("dimmed");
+    }
+  });
+
+  const correct = state.selectedIdx === state.findingIdx;
+  const verdict = document.getElementById("verdict");
+  const verdictIcon = document.getElementById("verdictIcon");
+  const verdictText = document.getElementById("verdictText");
+  verdict.classList.remove("correct", "missed");
+
+  if (correct) {
+    verdict.classList.add("correct");
+    verdictIcon.textContent = "✓";
+    verdictText.innerHTML = `見抜いた ― <span class="accent">${idxLabel(state.findingIdx)}</span> に、心拡大の所見が写っていました。`;
+  } else {
+    verdict.classList.add("missed");
+    verdictIcon.textContent = "!";
+    if (state.selectedIdx === null) {
+      verdictText.innerHTML = `所見は <span class="accent">${idxLabel(state.findingIdx)}</span> ―<br>16 枚のなかで、心陰影が拡大している唯一の 1 枚。`;
+    } else {
+      verdictText.innerHTML = `所見は <span class="accent">${idxLabel(state.findingIdx)}</span> ― 選んだ ${idxLabel(state.selectedIdx)} は、ふつうの正常像でした。`;
+    }
+  }
+
+  // big xray
+  document.getElementById("bigXrayImg").src = FINDING_IMAGE;
+  document.getElementById("findingId").textContent =
+    `${idxLabel(state.findingIdx)} / NIH 00000001`;
+
+  document.getElementById("reveal").classList.add("show");
+  document.getElementById("resetBtn").hidden = false;
+  document.getElementById("phaseLabel").textContent = "STEP 2 / 2 — FINDING";
+
+  setTimeout(() => {
+    document.getElementById("reveal").scrollIntoView({ behavior: "smooth", block: "start" });
+  }, 1200);
+}
+
+function resetReveal() {
+  document.getElementById("reveal").classList.remove("show");
+  document.getElementById("resetBtn").hidden = true;
+  document.getElementById("preview").classList.remove("show");
+  document.getElementById("phaseLabel").textContent = "STEP 1 / 2 — SEARCH";
+}
+
+function reset() {
+  init(Math.floor(Math.random() * 1e8));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+document.getElementById("revealBtn").addEventListener("click", reveal);
+document.getElementById("resetBtn").addEventListener("click", reset);
+
+// initial seed
+init(20260517);
+</script>
+</body>
+</html>
