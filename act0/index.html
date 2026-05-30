@@ -4376,6 +4376,11 @@
   .pr-card.c1 .nm { color: var(--blue); }
   .pr-card.c2 .nm { color: var(--purple); }
   .pr-card.c3 .nm { color: var(--green); }
+  .pr-card.appendix { background: var(--paper-2); border-style: dashed; }
+  .pr-card.appendix::before { background: var(--ink-4); }
+  .pr-card.appendix .nm { color: var(--ink-4); font: 800 17px/1 "Roboto", serif; letter-spacing: .04em; align-self: center; }
+  .pr-card.appendix .pr-illust { color: var(--ink-4); opacity: .8; }
+  .pr-card.appendix h3 { color: var(--ink-2); }
   .pr-illust { width: 60px; height: 48px; }
   .pr-illust svg { width: 100%; height: 100%; display: block; overflow: visible; }
   .pr-card.c1 .pr-illust { color: var(--blue-deep); }
@@ -4880,41 +4885,6 @@
     </div>
   </section>
 
-  <!-- ========================================================
-       Slide 06 — ④ 顔(実生成顔 100 枚)
-       ======================================================== -->
-  <section class="slide s-flash s-fl-face guided" data-id="6">
-    <div class="slide-label">Slide 06 · Flash ④ 顔写真(実生成顔 100 枚)</div>
-    <div class="web-badge">→ で 100 枚 → この後に投票</div>
-    <div class="fl-top">
-      <div class="fl-tag"><span class="num">04</span><span class="lbl">SYNTHETIC PORTRAITS</span></div>
-      <h2 class="fl-title"><span class="vbadge"><svg class="vb-float" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 20c0-3.1 2.5-5 5.5-5s5.5 1.9 5.5 5"/><circle cx="17.5" cy="9" r="2.3"/><path d="M15.5 20c0-2.6 1.4-4.2 4-4.2 1.5 0 2.6.6 3.3 1.7"/></svg></span>100 人の、<span class="accent">顔写真</span>。</h2>
-    </div>
-    <div class="fl-stage">
-      <div class="face-stage" id="faceStage" data-step="1" data-nocenter="1">
-        <div class="face-deck" id="faceDeck"></div>
-        <div class="face-pager"><span id="facePagerLab">グループ 1 / 5</span><span class="hint">顔をクリックで次の 20 人 →</span></div>
-      </div>
-      <div class="reveal-note">この後すぐ聞きます ― この 100 人のうち、<span class="hl">実在する人</span> は何人いるでしょうか。Slido で投票してください。</div>
-    </div>
-  </section>
-
-  <!-- ========================================================
-       Slide 07 — 答え「0 人」(guided ドラマチック)
-       ======================================================== -->
-  <section class="slide s-answer guided" data-id="7">
-    <div class="slide-label">Slide 07 · Answer · 0 人(全 AI 生成)</div>
-    <div class="web-badge">→ キーで答えが出ます</div>
-    <div class="an-eyebrow"><span class="dot"></span>ANSWER — POLL CLOSED</div>
-    <div class="an-stage">
-      <div class="an-big" data-step="1" data-nocenter="1"><span class="z">0</span><span class="unit">人</span></div>
-      <div class="an-msg" data-step="2" data-nocenter="1">100 人 <span class="accent">全員</span> が、AI が生成した実在しない顔でした。<br>本物の人物は、<span class="accent">1 人もいません</span>。</div>
-      <div class="an-recap" data-step="3" data-nocenter="1">
-        いまの 5 分で、<strong>200 を超えるデータ</strong> を見てきました。<br>
-        素粒子、取引、医療画像、そして顔 ― これらを人間の目だけで判断するのは、もう難しい時代に入っています。
-      </div>
-    </div>
-  </section>
 
   <!-- ========================================================
        Slide 08 — 機械学習の二つの仕事(guided 同じ顔=並置)
@@ -4962,7 +4932,7 @@
     <div class="slide-label">Slide 09 · Three Promises</div>
     <div class="web-badge">→ キーで 1 つずつ出ます</div>
     <div class="pr-head">
-      <h2><span class="vbadge"><svg class="vb-pulse" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>今日の中心は、大きく <span class="accent">3 つ</span> のパートです。</h2>
+      <h2><span class="vbadge"><svg class="vb-pulse" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span>今日の中心は、大きく <span class="accent">2 つ</span> のパートです。</h2>
       <div class="sub">そして、その先に ― 持ち帰ってほしいことがあります。</div>
     </div>
     <div class="pr-cards">
@@ -4989,15 +4959,15 @@
         <h3>機械学習を支える<br>数学の 3 本柱</h3>
         <div class="pr-body">いまの機械学習は、いくつかの数学に支えられています。その <strong>3 本の柱</strong> を、ひとつずつ見ていきます。</div>
       </div>
-      <div class="pr-card c3" data-step="3">
-        <div class="pr-toprow"><div class="nm">03</div>
+      <div class="pr-card c3 appendix" data-step="3">
+        <div class="pr-toprow"><div class="nm">Appendix</div>
           <div class="pr-illust il-engines"><svg viewBox="0 0 56 52" fill="none" stroke="currentColor">
             <g class="gearA"><circle cx="21" cy="26" r="11" stroke-width="4" stroke-dasharray="3 4"/><circle cx="21" cy="26" r="4" fill="currentColor" stroke="none"/></g>
             <g class="gearB"><circle cx="39" cy="26" r="8" stroke-width="3.5" stroke-dasharray="2.5 3.5"/><circle cx="39" cy="26" r="3" fill="currentColor" stroke="none"/></g>
           </svg></div>
         </div>
         <h3>現代 AI の二大エンジン</h3>
-        <div class="pr-body">いまの AI を動かす 2 つの仕組み。生成 AI の心臓部を、数式まで見ます。</div>
+        <div class="pr-body">本編の 2 パートに加えて、希望者向けの <strong>Appendix</strong>。生成 AI の心臓部を、数式まで掘り下げます。</div>
         <div class="pr-sub"><b>Transformer</b> ／ <b>拡散モデル</b></div>
       </div>
     </div>
@@ -6123,11 +6093,11 @@ window.HOSOKU_SUPP = {
       ],
       done:'見つけ出す「分類」と、生み出す「生成」。この3時間で、両方の数式を見ていきます。' },
     's-promises': { tag:'今日の流れ',
-      intro:'最後に、今日の流れと、持ち帰ってほしいことをお話しします。中心は、3つのパートです。',
+      intro:'最後に、今日の流れと、持ち帰ってほしいことをお話しします。中心は、2つのパートです。',
       steps:[
         '第1幕は「不均衡という問題」。さっきの4つの世界に共通する構造を、30分かけて解きほぐします。',
         '第2幕は「数学の3本柱」。機械学習を支える3つの数学を、30分で見ていきます。',
-        '第3幕は「二大エンジン」。Transformerと拡散モデル ― いまの生成AIの心臓部を、合わせて50分かけて見ます。',
+        'そしてこの2つに加えて ― Transformerと拡散モデルは、生成AIの心臓部。こちらは Appendix として、興味のある人向けに用意しています。',
         'そして、今日いちばん持ち帰ってほしいのは ― これです。「答えのない問いに、どう向き合うか。自分は、どうありたいか。」'
       ],
       done:'この問いを、頭の片隅に置いてみてください。今日の数学が、その手がかりになればと思います。' }
