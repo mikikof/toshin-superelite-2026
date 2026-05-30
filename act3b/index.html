@@ -5008,7 +5008,7 @@
       <div class="sample-stage" data-step="2" data-nocenter="1">
         <div class="smp-title">生成 = サンプリング ― 分布の「山」から一つ選ぶ</div>
         <svg id="wgSvg" viewBox="0 0 320 224" width="100%" style="display:block"></svg>
-        <div class="smp-readout" id="wgReadout">「サンプリング」を押すと、ありそうな所(山の高い所)から一枚が選ばれます。</div>
+        <div class="smp-readout" id="wgReadout">「サンプリング」を押すと、確率の重みが大きい領域から、分布に従って一枚が選ばれます。</div>
         <button class="toggle-btn" id="wgBtn">サンプリング ▶</button>
       </div>
     </div>
@@ -5656,7 +5656,7 @@
         </div></div>
         <div class="supp-sec"><div class="sec-no">2</div><div class="sec-main">
           <div class="sec-h">だから 1 ステップ戻せる</div>
-          <div class="sec-p">逆向きの平均 μ も、x<sub>t</sub> と予測 ε<sub>θ</sub> だけで書けます:<span class="mq">μ = (1/√α<sub>t</sub>)(x<sub>t</sub> − (β<sub>t</sub>/√(1−ᾱ<sub>t</sub>))·ε<sub>θ</sub>)</span>。<b>ノイズの予測が、そのまま「戻す向き」を与える</b>のです。</div>
+          <div class="sec-p">逆向きの平均 μ も、x<sub>t</sub> と予測 ε<sub>θ</sub> だけで書けます:<span class="mq">μ = (1/√α<sub>t</sub>)(x<sub>t</sub> − (β<sub>t</sub>/√(1−ᾱ<sub>t</sub>))·ε<sub>θ</sub>)</span>。<b>ノイズの予測が、そのまま「戻す向き」を与える</b>のです。(実際のサンプリングでは、この平均に少しのゆらぎ <span class="mq">x<sub>t−1</sub> = μ + σ<sub>t</sub> z</span> も足します ― 最後の 1 歩を除いて。)</div>
         </div></div>
         <div class="supp-sec"><div class="sec-no">3</div><div class="sec-main">
           <div class="sec-h">答えの分かる問題に化けた</div>
@@ -5724,7 +5724,7 @@
       body:`
         <div class="supp-sec"><div class="sec-no">1</div><div class="sec-main">
           <div class="sec-h">ステップを無限に細かくする</div>
-          <div class="sec-p">きざみ幅を <span class="mq">Δt → 0</span> にすると、ステップごとの漸化式が<b>連続の式</b>になります:<span class="mq">dX = f(X,t) dt + g(t) dW</span>。dW は<b>ブラウン運動</b> ― ランダムにふらつく動きです。</div>
+          <div class="sec-p">きざみ幅を <span class="mq">Δt → 0</span> にすると、ステップごとの漸化式が<b>連続の式</b>になります:<span class="mq">dX = f(X,t) dt + g(t) dW</span>。W<sub>t</sub> が<b>ブラウン運動</b>で、dW はそのごく短い時間のランダムな増分です。</div>
           <div class="sec-fig"><div class="sf-box"><svg viewBox="0 0 340 110">
             <line x1="20" y1="92" x2="320" y2="92" stroke="#E6D4B0" stroke-width="1.5"/>
             ${(()=>{let p='24,60 ';let y=60;for(let x=24;x<=316;x+=8){y+=(Math.random()-0.5)*16; y=Math.max(24,Math.min(86,y)); p+=`${x},${y.toFixed(0)} `;}return `<polyline class="sf-flow" points="${p.trim()}" fill="none" stroke="${A}" stroke-width="2.2"/>`;})()}
@@ -5763,7 +5763,7 @@
         </div></div>
         <div class="supp-sec"><div class="sec-no">3</div><div class="sec-main">
           <div class="sec-h">「見た目に効く情報」だけで拡散</div>
-          <div class="sec-p">細かい画素そのものでなく、<b>意味のある特徴</b>だけを残した空間で拡散する。だから速くて軽い。これが <b>Stable Diffusion</b>(潜在拡散モデル)― VAE と拡散の、良いとこ取りです。</div>
+          <div class="sec-p">細かい画素そのものでなく、<b>見た目をかなり保った圧縮表現</b>で拡散する。だから速くて軽い。これが <b>Stable Diffusion</b>(潜在拡散モデル)― VAE と拡散の、良いとこ取りです。</div>
         </div></div>
       `
     },

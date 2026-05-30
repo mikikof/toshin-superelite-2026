@@ -5444,7 +5444,7 @@
       <div class="step-tag"><span class="num">08</span><span class="lbl">A UNIVERSAL ARCHITECTURE</span></div>
       <div class="pill">言語だけの技術ではない</div>
     </div>
-    <h2>「連続したデータ」なら、<span class="accent">多くの分野で同じ仕組み</span>が使える。</h2>
+    <h2>「連続した並び(シーケンス)」なら、<span class="accent">多くの分野で同じ仕組み</span>が使える。</h2>
     <div class="struct-cards" style="grid-template-columns:repeat(3,1fr);gap:14px">
       <div class="map-cell" data-map="lang" data-step="1">
         <div class="sig">言語 ― LLM</div><div class="snm">GPT・BERT</div>
@@ -6203,7 +6203,7 @@ tfRenderSpotFigs();
         </div></div>
         <div class="supp-sec"><div class="sec-no">4</div><div class="sec-main">
           <div class="sec-h">RNN は、HMM の何を変えたのか</div>
-          <div class="sec-p">RNN は、この隠れ状態を ① 離散 → <b>連続ベクトル</b>に、② 確率表の手作り → <b>関数を学習</b>に、変えた現代版です。<span class="mq">HMM = 線形・離散・手作り</span> / <span class="mq">RNN = 非線形・連続・学習</span>。だから表現力が桁違いになりました。<br>(おまけ:いま注目の <b>S4・Mamba</b> は、この古典を「線形の状態空間」で洗練させ、Transformer の対抗馬として復活させています。)</div>
+          <div class="sec-p">RNN は、この隠れ状態を ① 離散 → <b>連続ベクトル</b>に、② 確率表の手作り → <b>関数を学習</b>に、と発想を受け継いで拡張したものです。<span class="mq">HMM = 確率的・離散・手作り</span> / <span class="mq">RNN = 決定論的・連続・学習</span>。だから表現力が桁違いになりました。<br>(おまけ:いま注目の <b>S4・Mamba</b> は、この古典を「線形の状態空間」で洗練させ、Transformer の対抗馬として復活させています。)</div>
         </div></div>
       `
     },
@@ -6222,7 +6222,7 @@ tfRenderSpotFigs();
         </div></div>
         <div class="supp-sec"><div class="sec-no">3</div><div class="sec-main">
           <div class="sec-h">Transformer の効きどころ</div>
-          <div class="sec-p">Transformer は、遠い語へ <b>1 ステップで直接</b>つなぎます。掛け算の鎖そのものを作らないので、<b>長距離でも信号が届きやすい</b>(RNN より短い経路で結べる) ― これが、RNN を置きかえた核心的な利点です。</div>
+          <div class="sec-p">Transformer は、遠い語へ <b>1 ステップで直接</b>つなぎます。語と語をつなぐ系列方向の経路が、RNN の N ステップから 1 ステップに縮むので、<b>長距離でも信号が届きやすい</b> ― これが、RNN を置きかえた核心的な利点です。(層を深く重ねる方向には勾配の問題が完全に消えるわけではなく、残差接続などで和らげます。)</div>
         </div></div>
       `
     },
