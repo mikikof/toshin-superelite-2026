@@ -5890,10 +5890,9 @@ window.HOSOKU_SUPP = {
 
   // === 見出しジャンプ(TOC)― 開閉式・ページ番号ジャンプ ===
   const TOC_SECTIONS = [
-    { nm:'OPENING',    jp:'開幕',         c:'#4566B3', items:[[1,'表紙'],[2,'4種類のデータを見る']] },
-    { nm:'FOUR DATA',  jp:'4つのデータ', c:'#4566B3', items:[[3,'① 素粒子衝突'],[4,'② カード取引履歴'],[5,'③ 胸部X線'],[6,'④ 顔写真 + Slido']] },
-    { nm:'THE ANSWER', jp:'答え',         c:'#1A1D24', items:[[7,'実在するのは、何人?']] },
-    { nm:'CORE',       jp:'核心',         c:'#4566B3', items:[[8,'機械学習の二つの仕事'],[9,'今日の流れと持ち帰り']] },
+    { nm:'OPENING',     jp:'開幕',         c:'#4566B3', items:[[1,'表紙'],[2,'3種類のデータを見る']] },
+    { nm:'THREE DATA',  jp:'3つのデータ', c:'#4566B3', items:[[3,'① 素粒子衝突'],[4,'② カード取引履歴'],[5,'③ 胸部X線']] },
+    { nm:'CORE',        jp:'核心',         c:'#4566B3', items:[[8,'機械学習の二つの仕事'],[9,'今日の流れと持ち帰り']] },
   ];
 
   const idToIndex = {};
@@ -5921,7 +5920,7 @@ window.HOSOKU_SUPP = {
     sec.items.forEach(pair => {
       const id = pair[0], title = pair[1], idx = idToIndex[id], glyph = SLIDE_GLYPHS[id] || '';
       _tocHTML += '<div class="toc-item" data-idx="' + idx + '" style="--d:' + (_ord * 0.022).toFixed(3) + 's; --it-acc:' + sec.c + '">'
-        + '<span class="pg">' + String(id).padStart(2, '0') + '</span>'
+        + '<span class="pg">' + String(idx + 1).padStart(2, '0') + '</span>'
         + '<span class="ti">' + title + '</span>'
         + '<span class="gl">' + glyph + '</span></div>';
       _ord++;
