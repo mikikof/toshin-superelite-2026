@@ -58,6 +58,9 @@
   .card.act1 .row .go{color:var(--rose)}
   .card.act3a .row .go{color:var(--green)}
   .card.act3b .row .go{color:#9c8348}
+  .card.adam::before{background:var(--purple)}
+  .card.adam .tag{background:var(--purple)}
+  .card.adam .row .go{color:var(--purple)}
   .glyph{position:absolute;right:14px;top:14px;font-family:"Yusei Magic",serif;font-size:54px;line-height:1;color:rgba(26,29,36,.06);pointer-events:none;user-select:none}
   .notes{margin-top:36px;padding:18px 20px;background:var(--ctx-blue);border-radius:12px;font-size:13px;line-height:1.85;color:var(--ink-2)}
   .notes b{font-weight:700}
@@ -87,10 +90,10 @@
     <a class="card act0" href="act0/">
       <span class="glyph">開</span>
       <span class="tag">ACT 0 ・ OPENING</span>
-      <h2>第0幕 ― 4つの世界 導入</h2>
-      <div class="sub">素粒子 / 金融 / 医療 / 皆さん自身 を順に体験する</div>
-      <p>9枚。素粒子衝突・クレジット履歴・X線画像・顔画像を実物の素材で見比べ、「分類か生成か」を切り出す。Slido 投票つき。</p>
-      <div class="row"><span class="time">9 SLIDES</span><span class="go">開く →</span></div>
+      <h2>第0幕 ― 導入</h2>
+      <div class="sub">素粒子 / 金融 / 医療 の実データを順に体験する</div>
+      <p>7枚。素粒子衝突・クレジット履歴・X線画像を実物の素材で見比べ、「分類か生成か」を切り出す。</p>
+      <div class="row"><span class="time">7 SLIDES</span><span class="go">開く →</span></div>
     </a>
 
     <a class="card act1" href="act1/">
@@ -118,6 +121,15 @@
       <div class="sub">前向き拡散 / 逆過程 / スコア / α_t / SDE</div>
       <p>12枚。ノイズを足して消す ― それだけで画像生成器が立つ理屈を、GAN との対比、スコア=「山登り」誤解の解きほぐし、CFG までで描き切る。</p>
       <div class="row"><span class="time">12 SLIDES</span><span class="go">開く →</span></div>
+    </a>
+
+    <a class="card adam" href="adam/">
+      <span class="glyph">適</span>
+      <span class="tag">SIMULATOR ・ ADAM</span>
+      <h2>ADAM シミュレータ</h2>
+      <div class="sub">損失地形を下る ― SGD / Adam / AdamW</div>
+      <p>学習率・モーメント・ノイズを動かしながら、最適化アルゴリズムが損失の谷をどう下るかを体験する。SGD のジグザグ、Adam の安定、AdamW の正則化を軌跡で見比べられます。</p>
+      <div class="row"><span class="time">INTERACTIVE</span><span class="go">開く →</span></div>
     </a>
 
   </div>
